@@ -3,9 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Meno Blog</title>
-  <!-- Link your CSS here -->
-  <link rel="stylesheet" href="styles.css" />
+  <title>Meno Blog - Home</title>
+  <style>
+    /* Reset and base */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #121212;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: flex-end; /* Push logo to the right */
+      padding-bottom: 1rem;
+    }
+    #logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ff6b35;
+      cursor: pointer;
+      user-select: none;
+    }
+    main {
+      display: flex;
+      gap: 2rem;
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    #featured-article {
+      flex-basis: 60%;
+      background: #1e1e1e;
+      padding: 2rem;
+      border-radius: 8px;
+    }
+    #featured-article h1 {
+      color: #ff6b35;
+      margin-bottom: 1rem;
+    }
+    #featured-article p {
+      line-height: 1.5;
+      color: #ccc;
+    }
+    #middle-articles {
+      flex-basis: 40%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    #middle-articles article {
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    #middle-articles h3 {
+      color: #ff6b35;
+      margin-bottom: 0.7rem;
+    }
+    #middle-articles p {
+      color: #ccc;
+      line-height: 1.4;
+    }
+    #bottom-scroll {
+      margin: 2rem auto 1rem;
+      max-width: 1200px;
+      padding-left: 1rem;
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+    }
+    #bottom-scroll article {
+      display: inline-block;
+      background: #1e1e1e;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 220px;
+      cursor: pointer;
+    }
+    #bottom-scroll h4 {
+      color: #ff6b35;
+      margin-bottom: 0.5rem;
+    }
+    #bottom-scroll p {
+      color: #ccc;
+      line-height: 1.3;
+    }
+    /* Scrollbar styling for bottom scroll */
+    #bottom-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    #bottom-scroll::-webkit-scrollbar-thumb {
+      background: #ff6b35;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -13,24 +112,45 @@
   </header>
 
   <main>
-    <!-- Left featured article (60%) -->
     <section id="featured-article" aria-label="Featured article">
-      <!-- Dynamic featured article content goes here -->
+      <h1>Dogs vs Cats as Pets</h1>
+      <p>Explore the timeless debate between dogs and cats as pets. We dive into personality traits, care needs, and lifestyle compatibility to help you decide your perfect companion.</p>
     </section>
 
-    <!-- Right latest articles (40%) -->
     <section id="middle-articles" aria-label="Latest articles">
-      <!-- Dynamic latest articles go here -->
+      <article>
+        <h3>The Rise of AI in Everyday Life</h3>
+        <p>How artificial intelligence is seamlessly integrating into our daily routines and reshaping the future.</p>
+      </article>
+      <article>
+        <h3>Minimalist Web Design Principles</h3>
+        <p>Discover the core principles of minimalist design to create clean, user-friendly websites.</p>
+      </article>
     </section>
   </main>
 
-  <!-- Bottom horizontal scroll -->
   <section id="bottom-scroll" aria-label="More articles">
-    <!-- Dynamic scrolling articles go here -->
+    <article>
+      <h4>Top 10 Indie Games to Watch</h4>
+      <p>A curated list of indie games that are making waves this year.</p>
+    </article>
+    <article>
+      <h4>Healthy Gaming Habits</h4>
+      <p>Tips on how to maintain physical and mental well-being while enjoying video games.</p>
+    </article>
+    <article>
+      <h4>Building Your First Website</h4>
+      <p>A step-by-step guide for beginners to create a website from scratch.</p>
+    </article>
+    <article>
+      <h4>Guide to Learning Python</h4>
+      <p>Start your programming journey with easy-to-follow Python tutorials.</p>
+    </article>
+    <article>
+      <h4>Future of E-commerce</h4>
+      <p>Explore the latest trends and technologies shaping online shopping experiences.</p>
+    </article>
   </section>
-
-  <!-- Link your JS here -->
-  <script src="scripts.js"></script>
 </body>
 </html>
 

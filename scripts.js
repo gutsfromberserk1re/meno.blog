@@ -1,151 +1,84 @@
-/* Reset and base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  user-select: none;
+const logo = document.getElementById("logo");
+let isLight = false;
+
+logo.addEventListener("dblclick", () => {
+  isLight = !isLight;
+  document.body.classList.toggle("light", isLight);
+});
+
+// Utility: shuffle array
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
-body {
-  background-color: #121212;
-  color: #eee;
-  min-height: 100vh;
-  transition: background-color 0.4s ease, color 0.4s ease;
-  display: flex;
-  flex-direction: column;
+async function loadArticles() {
+  try {
+    // Adjust the path to your actual JSON location
+    const response = await fetch("/articles/articles.json");
+    if (!response.ok) throw new Error("Failed to load articles");
+    const articles = await response.json();
+
+    if (!articles.length) return;
+
+    // Pick featured article (for example, first in array)
+    const featured = articles[0];
+
+    // Shuffle remaining articles
+    const remaining = articles.slice(1);
+    shuffleArray(remaining);
+
+    // Pick 3 random middle articles
+    const middleArticles = remaining.slice(0, 3);
+
+    // Bottom articles = all remaining after middle
+    const bottomArticles = remaining.slice(3);
+
+    renderFeatured(featured);
+    renderMiddle(middleArticles);
+    renderBottom(bottomArticles);
+  } catch (err) {
+    console.error("Error loading articles:", err);
+  }
 }
 
-header {
-  display: flex;
-  justify-content: flex-end;
-  padding: 1rem 2rem;
-  user-select: none;
+function renderFeatured(article) {
+  const container = document.getElementById("featured-article");
+  container.innerHTML = `
+    <h1><a href="${article.link}" style="color:#ff6b35; text-decoration:none;">${article.title}</a></h1>
+    <p>${article.summary}</p>
+  `;
 }
 
-#logo {
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: #ff6b35;
-  cursor: pointer;
-  user-select: none;
-  transition: filter 0.3s ease;
+function renderMiddle(articles) {
+  const container = document.getElementById("middle-articles");
+  container.innerHTML = "";
+  articles.forEach((article) => {
+    const div = document.createElement("div");
+    div.className = "middle-article";
+    div.innerHTML = `
+      <h3><a href="${article.link}" style="color:#ff6b35; text-decoration:none;">${article.title}</a></h3>
+      <p>${article.summary}</p>
+    `;
+    container.appendChild(div);
+  });
 }
 
-#logo:hover {
-  filter: brightness(1.2);
+function renderBottom(articles) {
+  const container = document.getElementById("bottom-scroll");
+  container.innerHTML = "";
+  articles.forEach((article) => {
+    const div = document.createElement("div");
+    div.className = "scroll-article";
+    div.innerHTML = `
+      <h4><a href="${article.link}" style="color:#ff6b35; text-decoration:none;">${article.title}</a></h4>
+      <p>${article.summary}</p>
+    `;
+    container.appendChild(div);
+  });
 }
 
-main {
-  flex: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  gap: 2rem;
-  padding: 1rem 2rem 1rem;
-  box-sizing: border-box;
-}
-
-/* Left 60% */
-#featured-article {
-  flex-basis: 60%;
-  background: #1e1e1e;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 0 12px rgba(255, 107, 53, 0.3);
-  user-select: text;
-}
-
-/* Middle 30% */
-#middle-articles {
-  flex-basis: 30%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  user-select: text;
-}
-
-/* Each middle article card */
-.middle-article {
-  background: #1e1e1e;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 0 8px rgba(255, 107, 53, 0.2);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.middle-article:hover {
-  background-color: #ff6b3514;
-}
-
-.middle-article h3 {
-  margin-bottom: 0.5rem;
-  color: #ff6b35;
-}
-
-.middle-article p {
-  font-size: 0.95rem;
-  color: #ccc;
-  line-height: 1.4;
-}
-
-/* Bottom horizontal scroll container */
-#bottom-scroll {
-  margin: 1rem 0 2rem;
-  padding-left: 2rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  scroll-behavior: smooth;
-  box-sizing: border-box;
-  user-select: text;
-}
-
-/* Individual bottom article cards */
-.scroll-article {
-  display: inline-block;
-  vertical-align: top;
-  width: 220px;
-  background: #1e1e1e;
-  border-radius: 8px;
-  margin-right: 1rem;
-  padding: 1rem;
-  box-shadow: 0 0 8px rgba(255, 107, 53, 0.2);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.scroll-article:hover {
-  transform: scale(1.05);
-  background-color: #ff6b3514;
-}
-
-.scroll-article h4 {
-  color: #ff6b35;
-  margin-bottom: 0.4rem;
-}
-
-.scroll-article p {
-  font-size: 0.9rem;
-  color: #ccc;
-  line-height: 1.3;
-}
-
-/* Light mode */
-body.light {
-  background-color: #f9f9f9;
-  color: #222;
-}
-
-body.light #featured-article,
-body.light #middle-articles > div,
-body.light .scroll-article {
-  background: #fff;
-  box-shadow: 0 0 12px rgba(255, 107, 53, 0.3);
-  color: #222;
-}
-
-body.light #logo {
-  color: #ff6b35;
-}
+loadArticles();

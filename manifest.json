@@ -1,0 +1,16 @@
+{
+  "featured": [
+    "featured-article1.html"
+  ],
+  "middle": [
+    "article3.html",
+    "article2.html",
+    "article5.html"
+  ],
+  "more": [
+    "article1.html",
+    "article4.html",
+    "article6.html",
+    "article7.html"
+  ]
+}

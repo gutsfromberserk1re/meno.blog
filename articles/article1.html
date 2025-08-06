@@ -1,1 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meno Blog - Article</title>
+<style>
+  /* Reset and base */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  body {
+    background: #121212;
+    color: #eee;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem;
+  }
+  header {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 1rem;
+  }
+  #logo {
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    color: #ff6b35;
+    position: fixed;
+    top: 1rem;
+    right: 2rem;
+    z-index: 10;
+  }
+  .striped-o {
+    background: repeating-linear-gradient(
+      45deg,
+      #ff6b35,
+      #ff6b35 6px,
+      white 6px,
+      white 12px
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    font-weight: bold;
+  }
+
+  /* Layout with ad, main article and sidebar */
+  #page-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 1rem;
+  }
+
+  /* Ad space on left */
+  #ad-space {
+    width: 120px;
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #aaa;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* Main article section */
+  #article-content {
+    flex: 3;
+    background: #1e1e1e;
+    padding: 2rem;
+    border-radius: 8px;
+  }
+  #article-content h1 {
+    color: #ff6b35;
+    margin-bottom: 1rem;
+  }
+  #article-content p {
+    line-height: 1.6;
+    color: #ccc;
+    margin-bottom: 1rem;
+  }
+  #article-content img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  /* Read more sidebar */
+  #read-more {
+    flex: 2;
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  #read-more h3 {
+    color: #ff6b35;
+    margin-bottom: 1rem;
+  }
+  #read-more article {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+  #read-more article img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  #read-more article div {
+    color: #ccc;
+  }
+  #read-more article div h4 {
+    margin: 0 0 0.3rem;
+    color: #ff6b35;
+    font-size: 1rem;
+  }
+  #read-more article div p {
+    font-size: 0.9rem;
+    line-height: 1.2;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div id="logo" title="Click to toggle dark/light mode">
+    me<span class="striped-o">o</span>
+  </div>
+</header>
+
+<div id="page-container">
+  <aside id="ad-space">
+    Your Ad Here
+  </aside>
+
+  <article id="article-content" aria-label="Article content">
+    <h1>Dogs vs Cats as Pets</h1>
+    <p>Choosing between dogs and cats as pets depends on your lifestyle, preferences, and care capability. Dogs are social, energetic, and often require more time for walks and playtime. Cats are more independent and adapt well to indoor living, needing less maintenance.</p>
+    <p>Dogs offer companionship and loyalty, and many thrive in active households. Cats provide calmness and low-maintenance affection, often fitting better in smaller living spaces. Both animals bring joy, but knowing your routine helps you pick the right friend.</p>
+    <img src="https://placekitten.com/800/400" alt="Dogs and cats together" />
+    <p>Consider your daily schedule, space, and activity level before adopting a pet. Whether you choose a dog or a cat, the bond you form will be rewarding and full of love.</p>
+  </article>
+
+  <aside id="read-more" aria-label="Read more articles">
+    <h3>Read More</h3>
+    <!-- Random articles will be inserted here by JS -->
+  </aside>
+</div>
+
+<script>
+  // Dark/Light toggle on logo click
+  const logo = document.getElementById('logo');
+  logo.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+  });
+
+  // Dummy data for random articles in "Read More"
+  const readMoreData = [
+    {
+      title: "Minimalist Web Design Principles",
+      description: "Discover the core principles of minimalist design to create clean, user-friendly websites.",
+      img: "https://placekitten.com/401/200",
+      link: "#"
+    },
+    {
+      title: "Healthy Gaming Habits",
+      description: "Tips on how to maintain physical and mental well-being while enjoying video games.",
+      img: "https://placekitten.com/402/200",
+      link: "#"
+    },
+    {
+      title: "The Rise of AI in Everyday Life",
+      description: "How artificial intelligence is seamlessly integrating into our daily routines and reshaping the future.",
+      img: "https://placekitten.com/400/200",
+      link: "#"
+    },
+    {
+      title: "Guide to Learning Python",
+      description: "Start your programming journey with easy-to-follow Python tutorials.",
+      img: "https://placekitten.com/602/300",
+      link: "#"
+    }
+  ];
+
+  const readMoreSection = document.getElementById('read-more');
+
+  function getRandomArticles(arr, count) {
+    let shuffled = arr.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
+  function renderReadMore() {
+    const randomArticles = getRandomArticles(readMoreData, 3);
+    randomArticles.forEach(article => {
+      const art = document.createElement('article');
+      art.innerHTML = `
+        <img src="${article.img}" alt="${article.title}" />
+        <div>
+          <h4>${article.title}</h4>
+          <p>${article.description}</p>
+        </div>
+      `;
+      art.onclick = () => {
+        window.location.href = article.link; // Replace with actual link in real use
+      };
+      readMoreSection.appendChild(art);
+    });
+  }
+
+  renderReadMore();
+</script>
+
+<style>
+  /* Light mode styles */
+  body.light-mode {
+    background: #fefefe;
+    color: #222;
+  }
+  body.light-mode #featured-article,
+  body.light-mode #middle-articles article,
+  body.light-mode #more-articles article,
+  body.light-mode #article-content,
+  body.light-mode #read-more,
+  body.light-mode #ad-space {
+    background: #fff;
+    color: #222;
+  }
+  body.light-mode #logo {
+    color: #ff6b35;
+  }
+  body.light-mode #logo .striped-o {
+    -webkit-text-fill-color: transparent;
+  }
+</style>
+
+</body>
+</html>
 

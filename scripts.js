@@ -1,84 +1,90 @@
-const logo = document.getElementById("logo");
-let isLight = false;
-
-logo.addEventListener("dblclick", () => {
-  isLight = !isLight;
-  document.body.classList.toggle("light", isLight);
-});
-
-// Utility: shuffle array
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-async function loadArticles() {
+async function fetchArticles() {
   try {
-    // Adjust the path to your actual JSON location
-    const response = await fetch("/articles/articles.json");
-    if (!response.ok) throw new Error("Failed to load articles");
-    const articles = await response.json();
-
-    if (!articles.length) return;
-
-    // Pick featured article (for example, first in array)
-    const featured = articles[0];
-
-    // Shuffle remaining articles
-    const remaining = articles.slice(1);
-    shuffleArray(remaining);
-
-    // Pick 3 random middle articles
-    const middleArticles = remaining.slice(0, 3);
-
-    // Bottom articles = all remaining after middle
-    const bottomArticles = remaining.slice(3);
-
-    renderFeatured(featured);
-    renderMiddle(middleArticles);
-    renderBottom(bottomArticles);
-  } catch (err) {
-    console.error("Error loading articles:", err);
+    const res = await fetch('./articles/articles.json');
+    if (!res.ok) throw new Error('Failed to fetch articles');
+    const articles = await res.json();
+    return articles;
+  } catch (e) {
+    console.error(e);
+    return [];
   }
 }
 
-function renderFeatured(article) {
-  const container = document.getElementById("featured-article");
-  container.innerHTML = `
-    <h1><a href="${article.link}" style="color:#ff6b35; text-decoration:none;">${article.title}</a></h1>
-    <p>${article.summary}</p>
+function pickRandomIndices(length, n, exclude = []) {
+  const indices = [];
+  while (indices.length < n && indices.length < length) {
+    const r = Math.floor(Math.random() * length);
+    if (!indices.includes(r) && !exclude.includes(r)) {
+      indices.push(r);
+    }
+  }
+  return indices;
+}
+
+function createArticleHTML(article) {
+  const imgSrc = article.images && article.images.length > 0
+    ? article.images[Math.floor(Math.random() * article.images.length)]
+    : 'https://placekitten.com/400/200';
+
+  return `
+    <article>
+      <div>
+        <h3>${article.title}</h3>
+        <p>${article.summary}</p>
+      </div>
+      <img src="${imgSrc}" alt="${article.title} image" />
+    </article>
   `;
 }
 
-function renderMiddle(articles) {
-  const container = document.getElementById("middle-articles");
-  container.innerHTML = "";
-  articles.forEach((article) => {
-    const div = document.createElement("div");
-    div.className = "middle-article";
-    div.innerHTML = `
-      <h3><a href="${article.link}" style="color:#ff6b35; text-decoration:none;">${article.title}</a></h3>
-      <p>${article.summary}</p>
-    `;
-    container.appendChild(div);
-  });
+function createFeaturedHTML(article) {
+  const imgSrc = article.images && article.images.length > 0
+    ? article.images[Math.floor(Math.random() * article.images.length)]
+    : 'https://placekitten.com/800/400';
+
+  return `
+    <h1>${article.title}</h1>
+    <p>${article.summary}</p>
+    <img src="${imgSrc}" alt="${article.title} image" />
+  `;
 }
 
-function renderBottom(articles) {
-  const container = document.getElementById("bottom-scroll");
-  container.innerHTML = "";
-  articles.forEach((article) => {
-    const div = document.createElement("div");
-    div.className = "scroll-article";
-    div.innerHTML = `
-      <h4><a href="${article.link}" style="color:#ff6b35; text-decoration:none;">${article.title}</a></h4>
-      <p>${article.summary}</p>
+async function renderArticles() {
+  const articles = await fetchArticles();
+  if (articles.length === 0) return;
+
+  const featuredIndex = Math.floor(Math.random() * articles.length);
+  const featured = articles[featuredIndex];
+  document.getElementById('featured-article').innerHTML = createFeaturedHTML(featured);
+
+  const middleIndices = pickRandomIndices(articles.length, 3, [featuredIndex]);
+  const middleHTML = middleIndices.map(i => createArticleHTML(articles[i])).join('');
+  document.getElementById('middle-articles').innerHTML = middleHTML;
+
+  const excludeIndices = [featuredIndex, ...middleIndices];
+  const moreIndices = pickRandomIndices(articles.length, 4, excludeIndices);
+  const moreHTML = moreIndices.map(i => {
+    const art = articles[i];
+    const imgSrc = art.images && art.images.length > 0
+      ? art.images[Math.floor(Math.random() * art.images.length)]
+      : 'https://placekitten.com/600/300';
+    return `
+      <article>
+        <div>
+          <h4>${art.title}</h4>
+          <p>${art.summary}</p>
+        </div>
+        <img src="${imgSrc}" alt="${art.title} image" />
+      </article>
     `;
-    container.appendChild(div);
-  });
+  }).join('');
+  document.getElementById('more-articles').innerHTML = moreHTML;
 }
 
-loadArticles();
+// Initial render
+renderArticles();
+
+// Toggle dark/light mode on single click
+document.getElementById('logo').addEventListener('click', () => {
+  document.body.classList.toggle('light-mode');
+});

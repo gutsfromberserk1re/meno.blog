@@ -16,7 +16,6 @@
 <meta property="og:image" content="https://yourusername.github.io/preview.jpg" />
 
 <style>
-  /* Reset and base */
   * {margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif;}
   body {background: #121212; color: #eee; min-height: 100vh; display: flex; flex-direction: column; padding: 1rem 2rem;}
   header {display: flex; justify-content: flex-end; padding-bottom: 1rem;}
@@ -49,7 +48,7 @@
 </header>
 
 <main>
-  <section id="featured-article" aria-label="Featured article"></section>
+  <section id="featured-article" aria-label="Featured article"><h1>Loading featured article...</h1></section>
   <section id="middle-articles" aria-label="Latest articles"></section>
 </main>
 
@@ -57,65 +56,62 @@
 
 <script>
 async function loadArticles() {
-  try {
-    // List of possible article files
-    const maxArticles = 20; // adjust if you have more
-    const articleFiles = [];
-    for (let i = 1; i <= maxArticles; i++) {
-      articleFiles.push(`Articles/article${i}.html`);
+  const maxArticles = 20; // Adjust this as you add more
+  const available = [];
+
+  // Detect available articles
+  for (let i = 1; i <= maxArticles; i++) {
+    const path = `./Articles/article${i}.html`;
+    try {
+      const res = await fetch(path, { cache: "no-store" });
+      if (res.ok) available.push(path);
+    } catch (e) {
+      // Skip if file missing
     }
-
-    // Check which actually exist
-    const available = [];
-    for (const file of articleFiles) {
-      const res = await fetch(file);
-      if (res.ok) available.push(file);
-    }
-
-    if (available.length === 0) {
-      document.querySelector('#featured-article').innerHTML = '<h1>No articles found.</h1>';
-      return;
-    }
-
-    // Sort by article number
-    available.sort((a, b) => {
-      const numA = parseInt(a.match(/\d+/)[0]);
-      const numB = parseInt(b.match(/\d+/)[0]);
-      return numB - numA; // highest first
-    });
-
-    // Featured = latest (highest number)
-    const featuredFile = available[0];
-    const rest = available.slice(1);
-
-    const featuredHTML = await fetch(featuredFile).then(r => r.text());
-    document.querySelector('#featured-article').innerHTML = featuredHTML;
-
-    // Randomize remaining
-    const shuffled = rest.sort(() => 0.5 - Math.random());
-    const middle = shuffled.slice(0, 3);
-    const more = shuffled.slice(3, 7);
-
-    // Middle Articles
-    const middleSection = document.querySelector('#middle-articles');
-    for (const f of middle) {
-      const html = await fetch(f).then(r => r.text());
-      const art = document.createElement('article');
-      art.innerHTML = html;
-      middleSection.appendChild(art);
-    }
-
-    // More Articles
-    const moreSection = document.querySelector('#more-articles');
-    for (const f of more) {
-      const html = await fetch(f).then(r => r.text());
-      const art = document.createElement('article');
-      art.innerHTML = html;
-      moreSection.appendChild(art);
-    }
-  } catch (err) {
-    console.error('Error loading articles:', err);
   }
+
+  if (available.length === 0) {
+    document.querySelector('#featured-article').innerHTML = '<h1>No articles found.</h1>';
+    return;
+  }
+
+  // Sort numerically
+  available.sort((a, b) => {
+    const numA = parseInt(a.match(/\d+/)[0]);
+    const numB = parseInt(b.match(/\d+/)[0]);
+    return numB - numA; // Latest first
+  });
+
+  const featured = available[0];
+  const rest = available.slice(1).sort(() => 0.5 - Math.random());
+  const middle = rest.slice(0, 3);
+  const more = rest.slice(3, 7);
+
+  // Featured
+  try {
+    const html = await fetch(featured, { cache: "no-store" }).then(r => r.text());
+    document.querySelector('#featured-article').innerHTML = html;
+  } catch {
+    document.querySelector('#featured-article').innerHTML = "<h1>Couldn't load featured article.</h1>";
+  }
+
+  // Helper to safely inject
+  const injectArticles = async (files, containerSelector) => {
+    const container = document.querySelector(containerSelector);
+    for (const file of files) {
+      try {
+        const html = await fetch(file, { cache: "no-store" }).then(r => r.text());
+        const article = document.createElement("article");
+        article.innerHTML = html;
+        container.appendChild(article);
+      } catch (e) {
+        console.warn(`Skipping ${file}`);
+      }
+    }
+  };
+
+  await injectArticles(middle, "#middle-articles");
+  await injectArticles(more, "#more-articles");
 }
 
 loadArticles();

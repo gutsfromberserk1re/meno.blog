@@ -153,7 +153,7 @@
 async function loadArticles() {
   try {
     // Fetch article filenames (requires server or GitHub Pages with JSON list)
-    const response = await fetch('Articles/articles.json');
+    const response = await fetch('articles/articles.json');
     const articles = await response.json();
 
     // Shuffle array

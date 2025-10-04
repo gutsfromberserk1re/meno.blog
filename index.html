@@ -165,7 +165,7 @@ async function loadArticles() {
 
     // Load article HTML into sections
     const load = async (file) => {
-      const res = await fetch(`Articles/${file}`);
+      const res = await fetch(`articles/${file}`);
       return await res.text();
     };
 

@@ -15,76 +15,8 @@
 <meta property="og:url" content="https://gutsfromberserk1re/meno.blog.github.io/" />
 <meta property="og:image" content="https://gutsfromberserk1re.github.io/meno.blog/preview.jpg" />
 
-<style>
-  /* Reset & Base */
-  * {margin:0; padding:0; box-sizing:border-box; font-family: Arial,sans-serif;}
-  body {background:#121212; color:#eee; min-height:100vh; display:flex; flex-direction:column; padding:1rem 2rem;}
-  header {display:flex; justify-content:flex-end; padding-bottom:1rem;}
-  #logo {font-size:2rem; font-weight:bold; cursor:pointer; user-select:none; color:#ff6b35;}
-  .striped-o {background:repeating-linear-gradient(45deg,#ff6b35,#ff6b35 6px,white 6px,white 12px); -webkit-background-clip:text; -webkit-text-fill-color:transparent; display:inline-block; font-weight:bold;}
-  
-  main {display:flex; gap:2rem; max-width:1200px; margin:0 auto;}
-  
-  #featured-article {flex-basis:60%; background:#1e1e1e; padding:2rem; border-radius:8px; display:flex; flex-direction:column;}
-  #featured-article h1 {color:#ff6b35; margin-bottom:1rem;}
-  #featured-article p {line-height:1.5; color:#ccc;}
-  #featured-article img {margin-top:1rem; max-width:100%; border-radius:6px; object-fit:cover; max-height:300px;}
-  
-  #middle-articles {flex-basis:40%; display:flex; flex-direction:column; gap:1.5rem;}
-  #more-articles {max-width:1200px; margin:2rem auto 3rem; display:flex; flex-direction:column; gap:1.8rem; padding:0 1rem;}
-
-  /* Clickable article boxes */
-  .article-link {
-    display:flex;
-    gap:1rem;
-    align-items:center;
-    text-decoration:none;
-    color: inherit;
-    flex-wrap:wrap;
-    background:#1e1e1e;
-    padding:1.5rem;
-    border-radius:8px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .article-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  }
-
-  .article-link h3 {color:#ff6b35; margin-bottom:0.5rem; font-size:1.3rem;}
-  .article-link p {color:#ccc; line-height:1.5; font-size:1.1rem;}
-
-  .article-link img {max-width:140px; max-height:100px; border-radius:6px; object-fit:cover; flex-shrink:0; order:2;}
-  /* Mobile responsiveness */
-@media (max-width: 768px) {
-  main {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  #featured-article,
-  #middle-articles {
-    flex-basis: 100%;
-  }
-
-  #middle-articles article,
-  #more-articles article {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  #middle-articles img,
-  #more-articles img {
-    max-width: 100%;
-    max-height: auto;
-    order: 0;
-    margin-top: 1rem;
-  }
-}
-
-
-</style>
+<!-- External CSS -->
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -99,77 +31,8 @@
 
 <section id="more-articles" aria-label="More articles"></section>
 
-<script>
-async function loadArticles() {
-  const maxArticles = 20;
-  const available = [];
-
-  for (let i = 1; i <= maxArticles; i++) {
-    const path = `./Articles/article${i}.html`;
-    try {
-      const res = await fetch(path, { cache: "no-store" });
-      if (res.ok) available.push(path);
-    } catch {}
-  }
-
-  if (available.length === 0) {
-    document.querySelector('#featured-article').innerHTML = '<h1>No articles found.</h1>';
-    return;
-  }
-
-  // Sort numerically (latest first)
-  available.sort((a,b)=>parseInt(b.match(/\d+/)[0]) - parseInt(a.match(/\d+/)[0]));
-
-  const featured = available[0];
-  const rest = available.slice(1).sort(()=>0.5-Math.random());
-  const middle = rest.slice(0,4); // 4 on right
-  const more = rest.slice(4,10);  // rest at bottom
-
-  // Featured
-  try {
-    const html = await fetch(featured, { cache: "no-store" }).then(r=>r.text());
-    document.querySelector('#featured-article').innerHTML = html;
-  } catch {
-    document.querySelector('#featured-article').innerHTML = "<h1>Couldn't load featured article.</h1>";
-  }
-
-  // Parse article HTML safely
-  const parseArticleHTML = (html, filePath) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-    const title = doc.querySelector("h1")?.innerText || doc.querySelector("h3")?.innerText || "No Title";
-    const para = doc.querySelector("p")?.innerText || "";
-    const imgSrc = doc.querySelector("img")?.src || "";
-    const imgAlt = doc.querySelector("img")?.alt || "";
-
-    return `
-      <a href="${filePath}" class="article-link">
-        <div>
-          <h3>${title}</h3>
-          <p>${para.slice(0, 120)}...</p>
-        </div>
-        ${imgSrc ? `<img src="${imgSrc}" alt="${imgAlt}">` : ""}
-      </a>
-    `;
-  };
-
-  const injectArticles = async (files, containerSelector) => {
-    const container = document.querySelector(containerSelector);
-    for (const file of files) {
-      try {
-        const html = await fetch(file, { cache: "no-store" }).then(r=>r.text());
-        const article = document.createElement("div");
-        article.innerHTML = parseArticleHTML(html, file);
-        container.appendChild(article.firstElementChild); // append the <a> directly
-      } catch {}
-    }
-  };
-
-  await injectArticles(middle, "#middle-articles");
-  await injectArticles(more, "#more-articles");
-}
-
-loadArticles();
-</script>
+<!-- External JS -->
+<script src="main.js"></script>
 </body>
 </html>
+

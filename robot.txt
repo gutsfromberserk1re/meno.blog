@@ -1,0 +1,6 @@
+# Allow all search engines to crawl your site
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://gutsfromberserk1re.github.io/meno.blog/sitemap.xml

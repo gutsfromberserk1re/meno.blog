@@ -56,6 +56,33 @@
   .article-link p {color:#ccc; line-height:1.5; font-size:1.1rem;}
 
   .article-link img {max-width:140px; max-height:100px; border-radius:6px; object-fit:cover; flex-shrink:0; order:2;}
+  /* Mobile responsiveness */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  #featured-article,
+  #middle-articles {
+    flex-basis: 100%;
+  }
+
+  #middle-articles article,
+  #more-articles article {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #middle-articles img,
+  #more-articles img {
+    max-width: 100%;
+    max-height: auto;
+    order: 0;
+    margin-top: 1rem;
+  }
+}
+
 
 </style>
 </head>

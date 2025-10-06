@@ -1,6 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+async function generateJSONLD() {
+  const maxArticles = 50; // Max number of articles
+  const articles = [];
+
+  for (let i = 1; i <= maxArticles; i++) {
+    const path = `./Articles/article${i}.html`;
+    try {
+      const res = await fetch(path, {cache: "no-store"});
+      if (res.ok) {
+        const html = await res.text();
+        // Extract title, description, and first image using DOMParser
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const headline = doc.querySelector("h1, h2, h3, h4")?.innerText || `Article ${i}`;
+        const description = doc.querySelector("p")?.innerText || "";
+        const image = doc.querySelector("img")?.src || "";
+
+        articles.push({
+          "@type": "BlogPosting",
+          "headline": headline,
+          "image": image,
+          "author": {"@type":"Person","name":"Meno Blog"},
+          "publisher":{"@type":"Organization","name":"Meno Blog"},
+          "datePublished": new Date().toISOString().split("T")[0],
+          "url": `${window.location.origin}/Articles/article${i}.html`,
+          "description": description
+        });
+      }
+    } catch {}
+  }
+
+  const jsonLD = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Meno Blog",
+    "url": window.location.origin,
+    "description": "Dive into insightful articles about tech, lifestyle, gaming, and creativity.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Meno Blog",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${window.location.origin}/logo.png`
+      }
+    },
+    "blogPost": articles
+  };
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.text = JSON.stringify(jsonLD, null, 2);
+  document.head.appendChild(script);
+}
+
+generateJSONLD();
+</script>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Meno Blog - Home</title>

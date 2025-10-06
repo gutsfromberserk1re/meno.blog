@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://gutsfromberserk1re.github.io/meno.blog/</loc>
+    <lastmod>2025-10-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Featured article -->
+  <url>
+    <loc>https://gutsfromberserk1re.github.io/meno.blog/Articles/article1.html</loc>
+    <lastmod>2025-10-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Additional articles -->
+  <url>
+    <loc>https://gutsfromberserk1re.github.io/meno.blog/Articles/article2.html</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://gutsfromberserk1re.github.io/meno.blog/Articles/article3.html</loc>
+    <lastmod>2025-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Add more articles following the same pattern -->
+</urlset>

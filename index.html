@@ -1,144 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Meno Blog - Home</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meno Blog - Modern Entertainment & News Online</title>
 
-<!-- SEO Optimizations -->
-<meta name="description" content="Meno Blog - Dive into insightful articles about tech, lifestyle, gaming, and creativity." />
-<meta name="keywords" content="blog, tech, gaming, lifestyle, meno, articles" />
-<meta name="Juno hayha" content="Meno Blog" />
-<meta property="og:title" content="Meno Blog" />
-<meta property="og:description" content="articles about tech, lifestyle, gaming, and creativity." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://gutsfromberserk1re.github.io/meno.blog/" />
-<meta property="og:image" content="https://gutsfromberserk1re.github.io/meno.blog/preview.jpg" />
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Meno Blog - Dive into insightful articles about tech, lifestyle, gaming, and creativity." />
+  <meta name="keywords" content="blog, tech, gaming, lifestyle, meno, articles" />
+  <meta name="author" content="Meno Blog" />
+  <meta property="og:title" content="Meno Blog" />
+  <meta property="og:description" content="Articles about tech, lifestyle, gaming, and creativity." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gutsfromberserk1re.github.io/meno.blog/" />
+  <meta property="og:image" content="https://gutsfromberserk1re.github.io/meno.blog/preview.jpg" />
 
-<!-- External CSS -->
-<link rel="stylesheet" href="style.css">
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css" />
 
-<!-- Mailchimp CSS -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+  <!-- JSON-LD Generator -->
+  <script>
+    async function generateJSONLD() {
+      const maxArticles = 50;
+      const articles = [];
 
-<style>
-  /* Popup overlay styles */
-  #subscribe-popup {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
+      for (let i = 1; i <= maxArticles; i++) {
+        const path = `./Articles/article${i}.html`;
+        try {
+          const res = await fetch(path, { cache: "no-store" });
+          if (res.ok) {
+            const html = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const headline = doc.querySelector("h1, h2, h3, h4")?.innerText || `Article ${i}`;
+            const description = doc.querySelector("p")?.innerText || "";
+            const image = doc.querySelector("img")?.src || "";
 
-  #subscribe-popup.active {
-    display: flex;
-  }
+            articles.push({
+              "@type": "BlogPosting",
+              "headline": headline,
+              "image": image,
+              "author": { "@type": "Person", "name": "Meno Blog" },
+              "publisher": { "@type": "Organization", "name": "Meno Blog" },
+              "datePublished": new Date().toISOString().split("T")[0],
+              "url": `${window.location.origin}/Articles/article${i}.html`,
+              "description": description
+            });
+          }
+        } catch {}
+      }
 
-  #subscribe-box {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 90%;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    color: #000;
-    position: relative;
-  }
+      const jsonLD = {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Meno Blog",
+        "url": window.location.origin,
+        "description": "Dive into insightful articles about tech, lifestyle, gaming, and creativity.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Meno Blog",
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${window.location.origin}/logo.png`
+          }
+        },
+        "blogPost": articles
+      };
 
-  #subscribe-box h2 {
-    margin-bottom: 1rem;
-  }
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.text = JSON.stringify(jsonLD, null, 2);
+      document.head.appendChild(script);
+    }
 
-  #close-popup {
-    position: absolute;
-    top: 10px; right: 15px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
-  /* Subscribe button */
-  #open-subscribe {
-    display: inline-block;
-    background: #ff6b35;
-    color: #fff;
-    border: none;
-    padding: 0.8rem 1.6rem;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin: 2rem auto;
-    display: block;
-    transition: 0.3s;
-  }
-
-  #open-subscribe:hover {
-    background: #ff7b4f;
-    transform: scale(1.05);
-  }
-</style>
+    generateJSONLD();
+  </script>
 </head>
 
 <body>
-<header>
-  <div id="logo">men<span class="striped-o">o</span></div>
-</header>
+  <header>
+    <div id="logo">men<span class="striped-o">o</span></div>
+  </header>
 
-<main>
-  <section id="featured-article" aria-label="Featured article"><h1>Loading featured article...</h1></section>
-  <section id="middle-articles" aria-label="Latest articles"></section>
-</main>
+  <main>
+    <section id="featured-article" aria-label="Featured article">
+      <h1>Loading featured article...</h1>
+    </section>
 
-<section id="more-articles" aria-label="More articles"></section>
+    <section id="middle-articles" aria-label="Latest articles"></section>
+  </main>
 
-<!-- Subscribe button -->
-<button id="open-subscribe">📬 Subscribe</button>
+  <section id="more-articles" aria-label="More articles"></section>
 
-<!-- Popup container -->
-<div id="subscribe-popup">
-  <div id="subscribe-box">
-    <button id="close-popup">✖</button>
-
-    <div id="mc_embed_signup">
-      <form action="https://github.us13.list-manage.com/subscribe/post?u=744e87878226c55264731f9f6&amp;id=fc65afcae7&amp;f_id=00307fe9f0" method="post" target="_blank">
-        <h2>Subscribe to Meno Blog</h2>
-        <div class="mc-field-group">
-          <label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label>
-          <input type="email" name="EMAIL" id="mce-EMAIL" required>
-        </div>
-        <div class="mc-field-group">
-          <label for="mce-FNAME">First Name</label>
-          <input type="text" name="FNAME" id="mce-FNAME">
-        </div>
-        <div style="position: absolute; left: -5000px;" aria-hidden="true">
-          <input type="text" name="b_744e87878226c55264731f9f6_fc65afcae7" tabindex="-1" value="">
-        </div>
-        <input type="submit" value="Subscribe" class="button">
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Scripts -->
-<script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
-<script src="main.js"></script>
-
-<script>
-  // Popup toggle logic
-  const openBtn = document.getElementById('open-subscribe');
-  const popup = document.getElementById('subscribe-popup');
-  const closeBtn = document.getElementById('close-popup');
-
-  openBtn.addEventListener('click', () => popup.classList.add('active'));
-  closeBtn.addEventListener('click', () => popup.classList.remove('active'));
-  popup.addEventListener('click', (e) => {
-    if (e.target === popup) popup.classList.remove('active');
-  });
-</script>
+  <!-- External JS -->
+  <script src="main.js"></script>
 </body>
 </html>
+

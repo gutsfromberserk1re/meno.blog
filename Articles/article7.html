@@ -1,3 +1,108 @@
-<h1>AMD’s Role in the AI Race</h1>
-<p>AMD’s latest AI chips challenge NVIDIA’s dominance, offering developers more affordable yet powerful alternatives for deep learning and data science. The competition is heating up—and consumers are winning.</p>
-<img src="https://placehold.co/800x400/e91e63/ffffff?text=AMD+AI+Chips" alt="AMD AI chip" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latest Tech News</title>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    #news-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .article {
+      background-color: #1c1c1c;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.2s;
+    }
+    .article:hover {
+      transform: scale(1.02);
+    }
+    img {
+      width: 200px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .info {
+      flex: 1;
+    }
+    .info h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #00b4ff;
+    }
+    .info p {
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .info a {
+      color: #00b4ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>Latest Tech News</header>
+  <div id="news-container">
+    <p>Loading news...</p>
+  </div>
+
+  <script>
+    const apiKey = "YOUR_API_KEY"; // Replace with your NewsAPI key
+    const url = `https://newsapi.org/v2/top-headlines?category=technology&language=en&pageSize=6&apiKey=${apiKey}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("news-container");
+        container.innerHTML = ""; // clear 'Loading...' message
+
+        if (data.articles.length === 0) {
+          container.innerHTML = "<p>No news found.</p>";
+          return;
+        }
+
+        data.articles.forEach(article => {
+          const div = document.createElement("div");
+          div.classList.add("article");
+          div.innerHTML = `
+            <img src="${article.urlToImage || 'https://via.placeholder.com/200x120'}" alt="News Image">
+            <div class="info">
+              <h2>${article.title}</h2>
+              <p>${article.description || "No description available."}</p>
+              <a href="${article.url}" target="_blank">Read More →</a>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        document.getElementById("news-container").innerHTML =
+          "<p>Error loading news. Try again later.</p>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

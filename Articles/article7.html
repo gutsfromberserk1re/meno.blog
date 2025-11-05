@@ -1,52 +1,161 @@
-<div id="news-container">
-  <h2>Latest Tech News</h2>
-  <p>Fetching fresh news from GNews...</p>
-</div>
-
-<script>
-const apiKey = "c12f5f05120277c8472ceb2a50af4b12"; // Replace this with your real GNews key
-const url = `https://gnews.io/api/v4/top-headlines?category=technology&lang=en&max=5&apikey=${apiKey}`;
-
-async function loadNews() {
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    const container = document.getElementById("news-container");
-    container.innerHTML = "<h2>Latest Tech News</h2>";
-
-    if (data.articles && data.articles.length > 0) {
-      data.articles.forEach(article => {
-        const box = document.createElement("div");
-        box.style.background = "#1e1e1e";
-        box.style.padding = "1rem";
-        box.style.marginTop = "1rem";
-        box.style.borderRadius = "8px";
-        box.style.display = "flex";
-        box.style.alignItems = "center";
-        box.style.gap = "1rem";
-
-        box.innerHTML = `
-          <img src="${article.image || 'https://via.placeholder.com/140'}" 
-               style="max-width:140px; border-radius:6px; object-fit:cover;">
-          <div>
-            <h3 style="color:#ff6b35;">${article.title}</h3>
-            <p style="color:#ccc;">${article.description || ''}</p>
-            <a href="${article.url}" target="_blank" style="color:#ff6b35; text-decoration:none;">Read more →</a>
-          </div>
-        `;
-        container.appendChild(box);
-      });
-    } else {
-      container.innerHTML += "<p>No news found right now.</p>";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latest Tech & Gaming News | Meno</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f0f0f;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
     }
 
-  } catch (error) {
-    console.error(error);
-    document.getElementById("news-container").innerHTML = "<p>Failed to load news.</p>";
-  }
-}
+    header {
+      text-align: center;
+      padding: 30px;
+      background: #181818;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #ffcc33;
+      text-transform: uppercase;
+      border-bottom: 3px solid #ffcc33;
+    }
 
-loadNews();
-</script>
+    #news {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      padding: 30px 15px;
+      max-width: 1000px;
+      margin: auto;
+    }
 
+    .article-box {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      background: #1b1b1b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+    }
+
+    .article-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255,204,51,0.3);
+    }
+
+    .article-box img {
+      width: 250px;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .article-text {
+      padding: 15px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .article-text h2 {
+      font-size: 20px;
+      margin: 0 0 10px;
+      color: #ffcc33;
+    }
+
+    .article-text p {
+      margin: 0;
+      color: #d1d1d1;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .article-text a {
+      margin-top: 12px;
+      display: inline-block;
+      color: #1e90ff;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .article-text a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      font-size: 14px;
+      background: #181818;
+      border-top: 3px solid #ffcc33;
+    }
+
+    @media (max-width: 700px) {
+      .article-box {
+        flex-direction: column;
+      }
+      .article-box img {
+        width: 100%;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>Meno News — Live Gaming & Tech</header>
+
+  <div id="news">Loading news...</div>
+
+  <footer>© 2025 Meno Blog | All rights reserved.</footer>
+
+  <script>
+    const newsContainer = document.getElementById("news");
+    const apiKey = "c12f5f05120277c8472ceb2a50af4b12"; // 🔑 Replace this with your key
+    const url = `https://gnews.io/api/v4/top-headlines?lang=en&country=us&topic=technology&max=5&apikey=${apiKey}`;
+
+    async function fetchNews() {
+      newsContainer.innerHTML = "Loading news...";
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.articles && data.articles.length > 0) {
+          newsContainer.innerHTML = ""; // clear "loading"
+
+          data.articles.forEach(article => {
+            const articleBox = document.createElement("div");
+            articleBox.className = "article-box";
+            articleBox.innerHTML = `
+              <img src="${article.image || 'https://via.placeholder.com/250x150?text=No+Image'}" alt="${article.title}">
+              <div class="article-text">
+                <h2>${article.title}</h2>
+                <p>${article.description || "No description available."}</p>
+                <a href="${article.url}" target="_blank">Read More →</a>
+              </div>
+            `;
+            newsContainer.appendChild(articleBox);
+          });
+        } else {
+          newsContainer.innerHTML = "No recent articles found.";
+        }
+      } catch (error) {
+        console.error(error);
+        newsContainer.innerHTML = "Error loading news.";
+      }
+    }
+
+    fetchNews();
+  </script>
+
+</body>
+</html>

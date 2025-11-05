@@ -1,108 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Latest Tech News</title>
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: #fff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #1a1a1a;
-      padding: 20px;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
-    #news-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .article {
-      background-color: #1c1c1c;
-      display: flex;
-      gap: 20px;
-      padding: 20px;
-      border-radius: 10px;
-      transition: transform 0.2s;
-    }
-    .article:hover {
-      transform: scale(1.02);
-    }
-    img {
-      width: 200px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    .info {
-      flex: 1;
-    }
-    .info h2 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #00b4ff;
-    }
-    .info p {
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .info a {
-      color: #00b4ff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <header>Latest Tech News</header>
-  <div id="news-container">
-    <p>Loading news...</p>
-  </div>
+<div id="news-container">
+  <h2>Latest Tech News</h2>
+  <p>Fetching fresh news from GNews...</p>
+</div>
 
-  <script>
-    const apiKey = "f1853342756e474dbf7cba5b7062d0b8"; // Replace with your NewsAPI key
-    const url = `https://newsapi.org/v2/top-headlines?category=technology&language=en&pageSize=6&apiKey=${apiKey}`;
+<script>
+const apiKey = "c12f5f05120277c8472ceb2a50af4b12"; // Replace this with your real GNews key
+const url = `https://gnews.io/api/v4/top-headlines?category=technology&lang=en&max=5&apikey=${apiKey}`;
 
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById("news-container");
-        container.innerHTML = ""; // clear 'Loading...' message
+async function loadNews() {
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
 
-        if (data.articles.length === 0) {
-          container.innerHTML = "<p>No news found.</p>";
-          return;
-        }
+    const container = document.getElementById("news-container");
+    container.innerHTML = "<h2>Latest Tech News</h2>";
 
-        data.articles.forEach(article => {
-          const div = document.createElement("div");
-          div.classList.add("article");
-          div.innerHTML = `
-            <img src="${article.urlToImage || 'https://via.placeholder.com/200x120'}" alt="News Image">
-            <div class="info">
-              <h2>${article.title}</h2>
-              <p>${article.description || "No description available."}</p>
-              <a href="${article.url}" target="_blank">Read More →</a>
-            </div>
-          `;
-          container.appendChild(div);
-        });
-      })
-      .catch(err => {
-        document.getElementById("news-container").innerHTML =
-          "<p>Error loading news. Try again later.</p>";
-        console.error(err);
+    if (data.articles && data.articles.length > 0) {
+      data.articles.forEach(article => {
+        const box = document.createElement("div");
+        box.style.background = "#1e1e1e";
+        box.style.padding = "1rem";
+        box.style.marginTop = "1rem";
+        box.style.borderRadius = "8px";
+        box.style.display = "flex";
+        box.style.alignItems = "center";
+        box.style.gap = "1rem";
+
+        box.innerHTML = `
+          <img src="${article.image || 'https://via.placeholder.com/140'}" 
+               style="max-width:140px; border-radius:6px; object-fit:cover;">
+          <div>
+            <h3 style="color:#ff6b35;">${article.title}</h3>
+            <p style="color:#ccc;">${article.description || ''}</p>
+            <a href="${article.url}" target="_blank" style="color:#ff6b35; text-decoration:none;">Read more →</a>
+          </div>
+        `;
+        container.appendChild(box);
       });
-  </script>
-</body>
-</html>
+    } else {
+      container.innerHTML += "<p>No news found right now.</p>";
+    }
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById("news-container").innerHTML = "<p>Failed to load news.</p>";
+  }
+}
+
+loadNews();
+</script>
+
